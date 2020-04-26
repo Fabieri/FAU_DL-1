@@ -1,10 +1,10 @@
 import os.path
 import json
-import scipy.misc
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 import sklearn
+
 
 # In this exercise task you will implement an image generator. Generator objects in python are defined as having a next function.
 # This next function returns the next generated object. In our case it returns the input of a neural network each time it gets called.
@@ -96,56 +96,6 @@ class ImageGenerator:
     def show(self):
         # In order to verify that the generator creates batches as required, this functions calls next to get a
         # batch of images and labels and visualizes it.
-
-        # fig = plt.figure(1)
-        #
-        # one = fig.add_subplot(4,3,1)
-        # one.title.set_text(str(self.class_name(labels[0])))
-        # plt.imshow(plots[0])
-        #
-        # two = fig.add_subplot(4,3,2)
-        # two.title.set_text(str(self.class_name(labels[1])))
-        # plt.imshow(plots[1])
-        #
-        # three = fig.add_subplot(4,3,3)
-        # three.title.set_text(str(self.class_name(labels[2])))
-        # plt.imshow(plots[2])
-        #
-        # four = fig.add_subplot(4,3,4)
-        # four.title.set_text(str(self.class_name(labels[3])))
-        # plt.imshow(plots[3])
-        #
-        # five = fig.add_subplot(4,3,5)
-        # five.title.set_text(str(self.class_name(labels[4])))
-        # plt.imshow(plots[4])
-        #
-        # six = fig.add_subplot(4,3,6)
-        # six.title.set_text(str(self.class_name(labels[5])))
-        # plt.imshow(plots[5])
-        #
-        # seven = fig.add_subplot(4,3,7)
-        # seven.title.set_text(str(self.class_name(labels[6])))
-        # plt.imshow(plots[6])
-        #
-        # eight = fig.add_subplot(4,3,8)
-        # eight.title.set_text(str(self.class_name(labels[7])))
-        # plt.imshow(plots[7])
-        #
-        # nine = fig.add_subplot(4,3,9)
-        # nine.title.set_text(str(self.class_name(labels[8])))
-        # plt.imshow(plots[8])
-        #
-        # ten = fig.add_subplot(4,3,10)
-        # ten.title.set_text(str(self.class_name(labels[9])))
-        # plt.imshow(plots[9])
-        #
-        # eleven = fig.add_subplot(4,3,11)
-        # eleven.title.set_text(str(self.class_name(labels[10])))
-        # plt.imshow(plots[10])
-        #
-        # twelve = fig.add_subplot(4,3,12)
-        # twelve.title.set_text(str(self.class_name(labels[11])))
-        # plt.imshow(plots[11])
 
         plots = self.next()[0]
         labels = self.next()[1]
