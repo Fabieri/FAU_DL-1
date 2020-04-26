@@ -28,32 +28,27 @@ class ImageGenerator:
         self.image_size = image_size
         self.rotation = rotation
         self.shuffle = shuffle
+        if self.shuffle is True:
+            self.files, self.file_names = sklearn.utils.shuffle(self.files, self.file_names)
         self.mirroring = mirroring
         self.class_dict = {0: 'airplane', 1: 'automobile', 2: 'bird', 3: 'cat', 4: 'deer', 5: 'dog', 6: 'frog',
                            7: 'horse', 8: 'ship', 9: 'truck'}
+        self.next_files = 0
 
     def next(self):
         # This function creates a batch of images and corresponding labels and returns it.
         # Note that your amount of total data might not be divisible without remainder with the batch_size.
         # Think about how to handle such cases
-        #TODO: implement next method
 
-        if self.shuffle is True:
-            self.files, self.file_names = sklearn.utils.shuffle(self.files, self.file_names)
-            # shuffler = np.random.permutation(len(self.file_names))
-            # self.files = self.files[shuffler]
-            # self.file_names = self.file_names[shuffler]
-
-        num_files = 0
-        while num_files < len(self.files):
-        # for idx, file in enumerate(self.files):
+        while self.next_files < len(self.files):
             batch = None
-            labels = np.array([])
+            labels = None
             batch_files = 0
             while batch_files < self.batch_size:
-                img = self.files[(num_files + batch_files) % (len(self.files))]
+                idx = (self.next_files + batch_files) % (len(self.files))
+                img = self.files[idx]
                 img = np.resize(img, (self.image_size[0], self.image_size[1], self.image_size[2]))
-                if self.mirroring and random.random() < 0.3:
+                if self.mirroring and random.random() < 0.5:
                     img = np.flip(img, axis=0)
                 if self.rotation:
                     rnd = random.random()
@@ -67,28 +62,100 @@ class ImageGenerator:
                     batch = np.array([img])
                 else:
                     batch = np.append(batch, [img], axis=0)
-                labels = np.append(labels, self.labels[str(self.file_names[(num_files + batch_files) % (len(self.files))])])
-                print(labels)
+                if labels is None:
+                    labels = np.array([self.labels[str(self.file_names[idx])]])
+                else:
+                    labels = np.append(labels, [self.labels[str(self.file_names[idx])]])
                 batch_files += 1
 
-            num_files += batch_files
+            self.next_files += self.batch_size
             return batch, labels
 
     def augment(self,img):
         # this function takes a single image as an input and performs a random transformation
         # (mirroring and/or rotation) on it and outputs the transformed image
-        #TODO: implement augmentation function
+        rnd = random.random()
+        rnd2 = random.random()
+
+        if rnd < 0.25:
+            img = np.rot90(img)
+        elif rnd < 0.5:
+            img = np.rot90(np.rot90(img))
+        elif rnd < 0.75:
+            img = np.rot90(np.rot90(np.rot90(img)))
+
+        if rnd2 < .5:
+            img = np.flip(img, axis=0)
 
         return img
 
     def class_name(self, x):
         # This function returns the class name for a specific input
-        #TODO: implement class name function
-        pass
+        return self.class_dict[x]
 
     def show(self):
         # In order to verify that the generator creates batches as required, this functions calls next to get a
         # batch of images and labels and visualizes it.
-        #TODO: implement show method
-        pass
+
+        # fig = plt.figure(1)
+        #
+        # one = fig.add_subplot(4,3,1)
+        # one.title.set_text(str(self.class_name(labels[0])))
+        # plt.imshow(plots[0])
+        #
+        # two = fig.add_subplot(4,3,2)
+        # two.title.set_text(str(self.class_name(labels[1])))
+        # plt.imshow(plots[1])
+        #
+        # three = fig.add_subplot(4,3,3)
+        # three.title.set_text(str(self.class_name(labels[2])))
+        # plt.imshow(plots[2])
+        #
+        # four = fig.add_subplot(4,3,4)
+        # four.title.set_text(str(self.class_name(labels[3])))
+        # plt.imshow(plots[3])
+        #
+        # five = fig.add_subplot(4,3,5)
+        # five.title.set_text(str(self.class_name(labels[4])))
+        # plt.imshow(plots[4])
+        #
+        # six = fig.add_subplot(4,3,6)
+        # six.title.set_text(str(self.class_name(labels[5])))
+        # plt.imshow(plots[5])
+        #
+        # seven = fig.add_subplot(4,3,7)
+        # seven.title.set_text(str(self.class_name(labels[6])))
+        # plt.imshow(plots[6])
+        #
+        # eight = fig.add_subplot(4,3,8)
+        # eight.title.set_text(str(self.class_name(labels[7])))
+        # plt.imshow(plots[7])
+        #
+        # nine = fig.add_subplot(4,3,9)
+        # nine.title.set_text(str(self.class_name(labels[8])))
+        # plt.imshow(plots[8])
+        #
+        # ten = fig.add_subplot(4,3,10)
+        # ten.title.set_text(str(self.class_name(labels[9])))
+        # plt.imshow(plots[9])
+        #
+        # eleven = fig.add_subplot(4,3,11)
+        # eleven.title.set_text(str(self.class_name(labels[10])))
+        # plt.imshow(plots[10])
+        #
+        # twelve = fig.add_subplot(4,3,12)
+        # twelve.title.set_text(str(self.class_name(labels[11])))
+        # plt.imshow(plots[11])
+
+        plots = self.next()[0]
+        labels = self.next()[1]
+
+        fig2 = plt.figure(2)
+        for i in range(12):
+            zw = fig2.add_subplot(4, 3, i+1)
+            zw.title.set_text(str(self.class_name(labels[i])))
+            plt.axis('off')
+            plt.imshow(plots[i])
+
+        plt.show()
 
